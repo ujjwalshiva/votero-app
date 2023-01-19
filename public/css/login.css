@@ -1,0 +1,17 @@
+*{
+    text-decoration: none;
+    color: #727272;
+    font-family: "Courier New", monospace;
+    font-weight: bolder;
+    background-color: #f8f8f8;
+}
+
+h1{
+    color: #c2c2c2;
+    font-size: 4rem;
+    text-align: center;
+}
+
+h3 {
+  color: #c2c2c2;
+}

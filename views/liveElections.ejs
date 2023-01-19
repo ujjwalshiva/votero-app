@@ -1,0 +1,46 @@
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votero</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+  <link rel="stylesheet" href="/css/elections.css">
+</head>
+
+<body>
+
+  <main class="container">
+
+    <%- include("header.ejs") %>
+    <div class="container">
+
+      <% if(data.length===0){ %>
+      <h3 style="text-align: center;color: gray;">There are no elections live as of now 😶</h3>
+      <% }else{%>
+      <h3>✅ Elections running right now:</h3>
+      <%} %>
+
+      <ul>
+        <% for(let i=0;i<data.length;i++){ %>
+        <li>
+          <u>
+            <%= data[i].name %>
+          </u>
+
+          <a href="/elections/<%= data[i].id %>/vote">
+            <button>
+              Vote
+            </button>
+          </a>
+
+        </li>
+        <% } %>
+      </ul>
+
+    </div>
+  </main>
+
+</body>
+
+</html>

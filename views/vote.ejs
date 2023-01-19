@@ -1,0 +1,53 @@
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <title>
+    Votero
+  </title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="/css/vote.css">
+</head>
+
+<body>
+  <main class="container">
+    <%- include("header.ejs")%>
+    <h2>
+      <%=election.name%>
+    </h2>
+    <form action="/elections/<%=election.id%>/validateVote" method="post" onsubmit="return confirm('Your vote is final once submitted. Continue?');">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <% let questionNo=1 %>
+      <div class="container">
+        <% for(let i=0;i<questionsList.length;i++){ if(optionsList[questionsList[i].id]){ %>
+        <section id="<%=questionNo%>">
+
+          <h4 class="quesName"><%=questionsList[i].name%>
+          </h4>
+
+          <div class="quesDesc">
+            <%=questionsList[i].description%>
+          </div>
+          <ul class="options">
+
+            <%for(j in optionsList[questionsList[i].id]){%>
+            <li>
+              <input type="radio" name="<%=questionsList[i].id%>" id="<%=optionsList[questionsList[i].id][j].id%>" value="<%=optionsList[questionsList[i].id][j].id%>" required>
+              <label for="<%=optionsList[questionsList[i].id][j].id%>">
+                <%=optionsList[questionsList[i].id][j].name%>
+              </label>
+            </li>
+            <%}%>
+                        </ul>
+                    </section>
+                    
+                    <% questionNo++; }}%>
+      </div>
+      <button type="submit">Vote</button>
+    </form>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+*{
+    text-decoration: none;
+    color: #727272;
+    font-family: "Courier New", monospace;
+    font-weight: bolder;
+    background-color: #f8f8f8;
+}
+
+h1{
+    color: #c2c2c2;
+    font-size: 4rem;
+    text-align: center;
+    
+}
+
+.buttons{
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    margin-top: 10rem;
+    border-radius: 30px;
+    
+}

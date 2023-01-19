@@ -1,0 +1,182 @@
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="csrf-token" content="<%= csrfToken %>" />
+  <title><%=title%></title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="/css/elections.css" />
+  <script>
+    var token = document
+      .querySelector('meta[name="csrf-token"]')
+      .getAttribute("content");
+
+    function editQuestion(id, quesID) {
+      console.log("editing question...");
+      questionName = document.getElementById("questionName").innerText;
+      questionDesc = document.getElementById("questionDesc").innerText;
+      if (questionName === "") {
+        window.alert("Question name cannot be empty");
+        window.location.reload();
+      } else {
+        console.log(questionName);
+        fetch(`/elections/${id}/questions/${quesID}`, {
+            method: "put",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              name: questionName,
+              description: questionDesc,
+              _csrf: token,
+            }),
+          })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+
+    function editOption(id, quesID, optionId) {
+      console.log("editing option...");
+      optionName = document.getElementById(`${optionId}`).innerText;
+      if (optionName === "") {
+        window.alert("Answer name cannot be empty");
+        window.location.reload();
+      } else {
+        console.log(optionName);
+        fetch(`/elections/${id}/questions/${quesID}/options/${optionId}`, {
+            method: "put",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              name: optionName,
+              _csrf: token,
+            }),
+          })
+          .then((res) => {
+            if (res.ok) {
+              window.location.reload();
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+
+    function deleteOption(id, quesID, optionId) {
+      fetch(`/elections/${id}/questions/${quesID}/options/${optionId}`, {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+        .then((res) => {
+          if (res.ok) {
+            window.location.reload();
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+
+    function deleteQuestion(id, quesID) {
+      fetch(`/elections/${id}/questions/${quesID}`, {
+          method: "delete",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            _csrf: token,
+          }),
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            window.location.replace(`/elections/${id}/questions`);
+          } else if (res.status === 300) {
+            window.alert("Cannot Delete the only question in the ballot");
+            window.location.reload();
+          }
+        })
+
+        .catch((err) => console.log(err));
+    }
+  </script>
+</head>
+
+<body>
+  <main class="container">
+    <div class="topmenu">
+      <nav aria-label="breadcrumb">
+        <ul>
+          <li><a href="/">home</a></li>
+          <li><a href="/elections"> elections </a></li>
+          <li>
+            <a href="/elections/<%=election.id%>"> <%=election.name%> </a>
+          </li>
+          <li>
+            <a href="/elections/<%=election.id%>/questions"> questions </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="logout">
+      <a href="/signout" class="signout">SignOut</a>
+    </div>
+
+    <%- include('header.ejs') %>
+    <div class="container">
+
+      <h3 id="questionName" ondblclick="qname=document.getElementById('questionName');qname.contentEditable=true;qname.focus();document.getElementById('quesSave').style.display=`block`">
+        <%=question.name%>
+      </h3>
+
+      <h4 id="questionDesc" ondblclick="qdesc=document.getElementById('questionDesc');qdesc.contentEditable=true;qdesc.focus();document.getElementById('quesSave').style.display=`block`">
+        <%=question.description%>
+      </h4>
+      <button style="display: none" id="quesSave" onclick="editQuestion(<%=election.id%>,<%=question.id%>)">
+        Save Changes
+      </button>
+
+      <% if(noOfOptions < 2 ){%>
+      <small>please provide atleast two options for a question</small>
+      <%}%>
+
+      <ul>
+        <% for (let i=0; i < options.length;i++){%>
+      <li>
+        <u id="<%=options[i].id%>" ondblclick="opt=document.getElementById('<%=options[i].id%>');opt.contentEditable=true;opt.focus();document.getElementById('btn<%=options[i].id%>').style.display=`initial`"><%= options[i].name %></u>
+        <div class="icons">
+          <a role="button" style="display: none" id="btn<%=options[i].id%>" href="editOption(<%=election.id%>,<%=question.id%>,<%=options[i].id%>)">
+            Save
+          </a>
+          <a role="button" href="deleteOption(<%= election.id%>,<%= question.id%>,<%=options[i].id%>)">
+            Delete
+          </a>
+        </div>
+      </li>
+      <% } %>
+      </ul>
+    </div>
+
+    <form action="/elections/<%=election.id%>/questions/<%=question.id%>/options/new" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input type="text" placeholder="Add new option" name="name" autofocus />
+      <button type="submit">Add</button>
+    </form>
+    <button class="secondary" onclick="deleteQuestion(<%= election.id%>,<%= question.id%>)">
+      Delete Question
+    </button>
+  </main>
+</body>
+
+</html>

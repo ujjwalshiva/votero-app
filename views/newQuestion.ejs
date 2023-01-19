@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%=title%></title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+  <%- include('header.ejs') %>
+  <div class="container">
+
+    <form action="/elections/<%=id%>/questions/new" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <h3>Create New Question</h3>
+
+      <div>
+        <input type="text" id="questionName" name="name" placeholder="Question Name"><i></i>
+      </div>
+
+      <div>
+        <textarea name="description" id="description" cols="38" rows="3" placeholder="Description"></textarea>
+      </div>
+      <input type="submit" value="Create">
+
+    </form>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    <%=title%>
+  </title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="/css/vote.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</head>
+
+<body>
+  <main class="container">
+    <%- include("header.ejs")%>
+    <h2 style="position: static;">
+      <%=election.name%>
+    </h2>
+    <h3 style="position: sticky;top: 0;">Results</h3>
+    <% let questionNo=1;let maxCount=-1 %>
+    <div class="container">
+
+      <% for(let i=0;i<questionsList.length;i++){ if(optionsList[questionsList[i].id]){ %>
+      <section>
+        <h4><%=questionsList[i].name%>
+          <canvas id="<%= questionsList[i].id %>" height="100"></canvas>
+          <script>
+            optionNamesList = JSON.parse('<%- JSON.stringify(optionNamesList[questionsList[i].id]) %>')
+            optionCountList = JSON.parse('<%- JSON.stringify(optionCountList[questionsList[i].id]) %>')
+
+            var barColors = [];
+            for (let i = 0; i < optionNamesList.length; i++) {
+              barColors.push(`hsl(${Math.floor(Math.random()*360)},100%,50%)`)
+            }
+            console.log(barColors, "\n", optionCountList, optionNamesList);
+            new Chart('<%- questionsList[i].id %>', {
+              type: "pie",
+              data: {
+                labels: optionNamesList,
+                datasets: [{
+                  backgroundColor: barColors,
+                  data: optionCountList
+                }]
+              },
+              options: {
+                legend: {
+                  position: "top"
+                },
+                title: {
+                  display: true,
+                  text: "Results"
+                }
+              }
+            });
+          </script>
+      </section>
+      <% questionNo++; }}%>
+    </div>
+  </main>
+</body>
+
+</html>

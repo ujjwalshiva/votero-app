@@ -1,0 +1,50 @@
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Votero</title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="./css/elections.css" />
+</head>
+
+<body>
+  <main class="container">
+    <div class="topmenu">
+      <nav aria-label="breadcrumb">
+        <ul>
+          <li><a href="/">home</a></li>
+          <li><a href="/elections"> elections </a></li>
+          <li><a href="/elections/<%=id%>"><%=election.name%></a></li>
+          <li><a href="/elections/<%=id%>/questions">questions</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="logout">
+      <a href="/signout" class="signout">SignOut</a>
+    </div>
+    <%- include('header.ejs') %>
+    <div class="container">
+      <h3><%=election.name%>- ballot</h3>
+
+      <ul>
+        <%for (let i=0; i < questions.length;i++){%>
+
+        <li>
+          <a href="/elections/<%=id%>/questions/<%=questions[i].id%>">
+            Q<%=i+1%> . <%= questions[i].name %>
+          </a>
+        </li>
+
+        <% } %>
+      </ul>
+    </div>
+    <div class="buttons">
+      <a href="/elections/<%=id%>/questions/new"><button>Create New Question</button></a>
+    </div>
+  </main>
+</body>
+
+</html>

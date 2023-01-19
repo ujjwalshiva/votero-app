@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%=title%>
+  </title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rubik+Microbe&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital@1&display=swap');
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <%- include('header.ejs') %>
+    <div class="container">
+      <form action="/elections/<%=id%>/voters/new" method="post">
+        <h3>Register New Voter</h3>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <div>
+          <input type="text" id="voterName" name="voterName" placeholder="Voter ID"><i></i>
+        </div>
+        <div>
+          <input type="password" id="password" name="password" placeholder="Password"><i></i>
+        </div>
+        <input type="submit" value="Register">
+      </form>
+      <% if(messages && messages.error && messages.error.length > 0)  { %>
+      <% for(var i=0; i<messages.error.length; i++) { %>
+      <li><%= messages.error[i] %></li>
+      <% } %>
+      <% } %>
+    </div>
+  </main>
+</body>
+
+</html>

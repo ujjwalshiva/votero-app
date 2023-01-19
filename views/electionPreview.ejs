@@ -1,0 +1,82 @@
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <title>
+    Votero
+  </title>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css" />
+  <link rel="stylesheet" href="./public/css/elections.css" />
+</head>
+<script>
+  var token = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content")
+
+  function startElection(id, allQ2, atL1Q2) {
+    let checkAll = true
+    if (!atL1Q2) {
+      alert("There needs to be a question with atleast 2 options")
+      return
+    }
+
+    if (!allQ2) {
+      checkAll = window.confirm("Questions without a minimum of 2 options will be discarded. Proceed?")
+    }
+    if (checkAll) {
+      console.log("running...");
+      fetch(`/elections/${id}/start`, {
+          method: "put",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "_csrf": token
+          })
+        })
+        .then((res) => {
+          if (res.ok) {
+            window.location.replace(`/elections/${id}`);
+          }
+        })
+        .catch((err) => console.log(err));
+
+    }
+  }
+</script>
+
+<body>
+  <main class="container">
+    <%- include("header.ejs")%>
+    <h2>
+      <%=election.name%>
+    </h2>
+    <% let qNo=1 %>
+    <div class="container">
+      <% for(let i=0;i<questionsList.length;i++){  %>
+      <section>
+        <h4><%=questionsList[i].name%>
+          <div>
+            <%=questionsList[i].description%>
+          </div>
+
+          <ul>
+            <%for(j in optionsList[questionsList[i].id]){%>
+
+            <li>
+              <%=optionsList[questionsList[i].id][j].name%>
+            </li>
+            <%}%>
+                    </ul>
+                </section>
+
+                <% qNo++; }%>
+    </div>
+    <button onclick="startElection(<%=election.id%>,<%=allQuesHaveAtleast2%>,<%=atleastOneques2%>)">Start Election</button>
+  </main>
+</body>
+
+</html>
